@@ -21,7 +21,6 @@ import {
     Link} from "react-router-dom";
 import DeleteUser from './DeleteUser';
 
-
 const useStyles = makeStyles(theme => ({
     root: theme.mixins.gutters({
         maxWidth: 600,
@@ -32,7 +31,12 @@ const useStyles = makeStyles(theme => ({
     title: {
         marginTop: theme.spacing(3),
         color: theme.palette.protectedTitle,
-        // border: '1px black dashed'
+        fontSize: '1.5em'
+    },
+    bigAvatar: {
+        width: 60,
+        height: 60,
+        margin: 10
     }
 }));
 
@@ -44,14 +48,13 @@ export default function Profile({match}) {
 
     useEffect(() => {
         const abortController = new AbortController();
-        const signal = abortController.signal;
-        
+        const signal = abortController.signal;        
         read({
             userId: match.params.userId
         }, {t: jwt.token}, signal).then((data) => {
             if (data && data.error) {                
                 setRedirectToSignin(true);
-            } else {
+            } else {               
                 setUser(data);
             }
         })
@@ -61,7 +64,11 @@ export default function Profile({match}) {
         }
         
     }, [match.params.userId]);
-
+    
+    const photoUrl = user._id
+        ? `/api/v1/users/photo/${user._id}?${new Date().getTime()}`
+        : `/api/v1/users/defaultPhoto`;
+    
     if (redirectToSignin) {
         return (<Redirect to='/signin' />)
     }
@@ -74,9 +81,7 @@ export default function Profile({match}) {
             <List dense>
                 <ListItem>
                     <ListItemAvatar>
-                        <Avatar>
-                            <Person/>
-                        </Avatar>
+                        <Avatar src={photoUrl} className={classes.bigAvatar}/>
                     </ListItemAvatar>
                     <ListItemText primary={user.name} secondary={user.email}/>                    
                     {
@@ -94,15 +99,15 @@ export default function Profile({match}) {
                         )
                     }                    
                 </ListItem>
+                <Divider/>
                 <ListItem>
                     <ListItemText primary={user.about}/>
-                </ListItem>
-                <Divider/>
+                </ListItem>                
                 <ListItem>
                     <ListItemText primary={"Juntou: " + (
                         new Date(user.created)).toDateString()}/>
                 </ListItem>
             </List>
         </Paper>
-    )
+    ) 
 }

@@ -3,6 +3,7 @@ import errorHandler from './../helpers/dbErrorHandler';
 import { extend } from 'lodash';
 import formidable from "formidable";
 import fs from "fs";
+import defaultAvatar from "./../../client/assets/images/defaultAvatar.png";
 
 const create = async (req, res, next) => {
     const user = new User(req.body);
@@ -94,4 +95,26 @@ const remove = async (req, res, next) => {
     }
 }
 
-export default { create, list, userById, read, update, remove }
+const photo = (req, res, next) => {
+    if (req.profile.photo.data) {
+        res.set("Content-Type", req.profile.photo.contentType);
+        return res.send(req.profile.photo.data);
+    }
+    // caso não encontre uma foto carregada
+    // o next() chamará defaultPhoto
+    next();
+}
+
+const defaultPhoto = (req, res) => {
+    return res.sendFile(process.cwd() + defaultAvatar);
+}
+
+export default { 
+    create, 
+    list, 
+    userById, 
+    read, 
+    update, 
+    remove, 
+    photo, 
+    defaultPhoto }
