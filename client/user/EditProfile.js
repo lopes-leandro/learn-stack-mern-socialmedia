@@ -8,7 +8,7 @@ import {
     TextField, 
     Typography, 
     Icon} from "@material-ui/core";
-import { FileUpload } from "@material-ui/icons";
+import {AddPhotoAlternate as FileUpload} from "@material-ui/icons";
 import { update, read } from './api-user';
 import auth from "./../auth/auth-helper";
 import { Redirect } from "react-router-dom";
@@ -118,7 +118,7 @@ export default function EditProfile({match}) {
                 </Typography>
                 <input accept="image/*" type="file" 
                     onChange={handleChange('photo')}
-                    style={{display: 'node'}}
+                    className={classes.input}
                     id="ico-button-file"/>
                 <label htmlFor="ico-button-file">
                     <Button variant="contained" color="default" component="span">
