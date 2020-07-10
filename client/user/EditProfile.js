@@ -44,6 +44,7 @@ export default function EditProfile({match}) {
         name: '',
         password: '',
         email: '',
+        about: '',
         open: false,
         error: '',
         redirectToProfile: false
@@ -58,7 +59,7 @@ export default function EditProfile({match}) {
             if (data && data.error) {
                 setValues({...values, error: data.error});
             } else {
-                setValues({...values, name: data.name, email: data.email });
+                setValues({...values, name: data.name, email: data.email, about: data.about });
             }
         });
 
@@ -71,7 +72,8 @@ export default function EditProfile({match}) {
         const user = {
             name: values.name || undefined,
             email: values.email || undefined,
-            password: values.password || undefined
+            password: values.password || undefined,
+            about: values.about || undefined
         }
         update({userId: match.params.userId}, {t: jwt.token}, user).then((data) => {
             if (data && data.error) {
@@ -102,6 +104,12 @@ export default function EditProfile({match}) {
                     onChange={handleChange('name')} 
                     margin="normal"/>
                 <br/>
+                <TextField id="multiline-flexible" label="About"
+                    multiline
+                    rows="2" 
+                    value={values.about} 
+                    onChange={handleChange('about')}/>
+                <br/>
                 <TextField id="email" type="email" label="Email" 
                     className={classes.textField} 
                     value={values.email} 
@@ -128,7 +136,7 @@ export default function EditProfile({match}) {
                     variant="contained" 
                     onClick={clickSubmit} 
                     className={classes.submit}>
-                    Submit
+                    Enviar
                 </Button>
             </CardActions>
         </Card>

@@ -78,7 +78,7 @@ export default function Profile({match}) {
                             <Person/>
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={user.name} secondary={user.email}/>
+                    <ListItemText primary={user.name} secondary={user.email}/>                    
                     {
                         auth.isAuthenticated().user &&
                         auth.isAuthenticated().user._id == user._id &&
@@ -92,7 +92,10 @@ export default function Profile({match}) {
                                 <DeleteUser userId={user._id}/>
                             </ListItemSecondaryAction>
                         )
-                    }
+                    }                    
+                </ListItem>
+                <ListItem>
+                    <ListItemText primary={user.about}/>
                 </ListItem>
                 <Divider/>
                 <ListItem>

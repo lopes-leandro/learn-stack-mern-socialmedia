@@ -23,7 +23,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: 'Password é obrigatório.'
     },
-    salt: String
+    salt: String,
+    about: {
+        type: String,
+        trim: true
+    }
 });
 
 UserSchema.methods = {
