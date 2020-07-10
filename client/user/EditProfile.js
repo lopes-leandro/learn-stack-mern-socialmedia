@@ -8,6 +8,7 @@ import {
     TextField, 
     Typography, 
     Icon} from "@material-ui/core";
+import { FileUpload } from "@material-ui/icons";
 import { update, read } from './api-user';
 import auth from "./../auth/auth-helper";
 import { Redirect } from "react-router-dom";
@@ -35,6 +36,12 @@ const useStyles = makeStyles(theme => ({
     submit: {
         margin: 'auto',
         marginBottom: theme.spacing(2)
+    },
+    input: {
+        display: 'none'
+    },
+    filename: {
+        marginLeft: '10px'
     }
 }));
 
@@ -45,6 +52,7 @@ export default function EditProfile({match}) {
         password: '',
         email: '',
         about: '',
+        photo: '',
         open: false,
         error: '',
         redirectToProfile: false
@@ -69,23 +77,33 @@ export default function EditProfile({match}) {
     }, [match.params.userId]);
 
     const clickSubmit = () => {
-        const user = {
-            name: values.name || undefined,
-            email: values.email || undefined,
-            password: values.password || undefined,
-            about: values.about || undefined
-        }
-        update({userId: match.params.userId}, {t: jwt.token}, user).then((data) => {
+        let userData = new FormData();
+        values.name && userData.append('name', values.name);
+        values.email && userData.append('email', values.email);
+        values.password && userData.append('password', values.password);
+        values.about && userData.append('about', values.about);
+        values.photo && userData.append('photo', values.photo);
+
+        // const user = {
+        //     name: values.name || undefined,
+        //     email: values.email || undefined,
+        //     password: values.password || undefined,
+        //     about: values.about || undefined
+        // }
+        update({userId: match.params.userId}, {t: jwt.token}, userData).then((data) => {
             if (data && data.error) {
                 setValues({...values, error: data.error});
             } else {
-                setValues({...values, userId: data._id, redirectToProfile: true});
+                setValues({...values, redirectToProfile: true});
             }
         });
     }
 
     const handleChange = name => event => {
-        setValues({...values, [name]: event.target.value});
+        const value = name === 'photo'
+            ? event.target.files[0]
+            : event.target.value;
+        setValues({...values, [name]: value});
     }
 
     if (values.redirectToProfile) {
@@ -98,6 +116,20 @@ export default function EditProfile({match}) {
                 <Typography variant="h6" className={classes.title}>
                     Editar Perfil
                 </Typography>
+                <input accept="image/*" type="file" 
+                    onChange={handleChange('photo')}
+                    style={{display: 'node'}}
+                    id="ico-button-file"/>
+                <label htmlFor="ico-button-file">
+                    <Button variant="contained" color="default" component="span">
+                        Carregar
+                        <FileUpload />
+                    </Button>
+                </label>
+                <span className={classes.filename}>
+                    {values.photo ? values.photo.name : ''}
+                </span>
+                <br/>
                 <TextField id="name" label="Name" 
                     className={classes.textField} 
                     value={values.name} 
