@@ -17,4 +17,10 @@ router.route('/api/v1/users/:userId')
 // em uma rota solicitada
 router.param('userId', userController.userById);
 
+router.route('/api/v1/users/photo/:userId')
+    .get(userController.photo, userController.defaultPhoto);
+
+router.route('/api/v1/users/defaultPhoto')
+    .get(userController.defaultPhoto);
+
 export default router;

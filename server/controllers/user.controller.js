@@ -1,6 +1,9 @@
 import User from './../models/user.model';
 import errorHandler from './../helpers/dbErrorHandler';
-import lodash, { extend } from 'lodash';
+import { extend } from 'lodash';
+import formidable from "formidable";
+import fs from "fs";
+import defaultAvatar from "./../../client/assets/images/defaultAvatar.png";
 
 const create = async (req, res, next) => {
     const user = new User(req.body);
@@ -17,7 +20,7 @@ const create = async (req, res, next) => {
 }
 const list = async (req, res) => {
     try {
-        let users = await User.find().select('name about email updated created');
+        let users = await User.find().select('name about email photo updated created');
         res.json(users);
     } catch (err) {
         return res.status(400).json({
@@ -47,21 +50,36 @@ const read = (req, res) => {
     return res.json(req.profile);
 }
 const update = async (req, res) => {
-    try {
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+    form.parse(req, async(err, fields, files) => {
+        if (err) {
+            return res.status(400).json({
+                error: "A imagem não pode ser carregada."
+            });
+        }
         let user = req.profile;
         // mescla os dados do banco de dados com 
         // os dados que vieram da request
         user = extend(user, req.body); 
         user.updated = Date.now();
-        await user.save();
-        user.hashed_password = undefined;
-        user.salt = undefined;
-        res.json(user);
-    } catch (err) {
-        return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
-        });
-    }
+        
+        if (files.photo) {
+            user.photo.data = fs.readFileSync(files.photo.path);
+            user.photo.contentType = files.photo.type;
+        }
+
+        try {
+            await user.save();
+            user.hashed_password = undefined;
+            user.salt = undefined;
+            res.json(user);
+        } catch (err) {
+            return res.status(400).json({
+                error: errorHandler.getErrorMessage(err)
+            });
+        }    
+    });
 }
 const remove = async (req, res, next) => {
     try {
@@ -77,4 +95,26 @@ const remove = async (req, res, next) => {
     }
 }
 
-export default { create, list, userById, read, update, remove }
+const photo = (req, res, next) => {
+    if (req.profile.photo.data) {
+        res.set("Content-Type", req.profile.photo.contentType);
+        return res.send(req.profile.photo.data);
+    }
+    // caso não encontre uma foto carregada
+    // o next() chamará defaultPhoto
+    next();
+}
+
+const defaultPhoto = (req, res) => {
+    return res.sendFile(process.cwd() + defaultAvatar);
+}
+
+export default { 
+    create, 
+    list, 
+    userById, 
+    read, 
+    update, 
+    remove, 
+    photo, 
+    defaultPhoto }
