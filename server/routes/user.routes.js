@@ -23,4 +23,14 @@ router.route('/api/v1/users/photo/:userId')
 router.route('/api/v1/users/defaultPhoto')
     .get(userController.defaultPhoto);
 
+router.route('/api/v1/users/follow')
+    .put(authController.requireSignin,
+        userController.addFollowing,
+        userController.addFollower)
+
+router.route('/api/v1/users/unfollow')
+    .put(authController.requireSignin,
+        userController.removeFollowing,
+        userController.removeFollower)
+
 export default router;
