@@ -124,7 +124,7 @@ const addFollowing = async (req, res, next) => {
     }
 }
 
-const addFollower = async (req, res, next) => {
+const addFollower = async (req, res) => {
     try {
         let result = await User.findByIdAndUpdate(req.body.followId,
             {$push: {followers: req.body.userId}},
