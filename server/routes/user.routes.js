@@ -6,7 +6,19 @@ const router = express.Router();
 
 router.route('/api/v1/users')
     .get(userController.list)
-    .post(userController.create)
+    .post(userController.create);
+
+router.route('/api/v1/users/photo/:userId')
+    .get(userController.photo, userController.defaultPhoto);
+
+router.route('/api/v1/users/defaultPhoto')
+    .get(userController.defaultPhoto);
+
+router.route('/api/v1/users/follow')
+    .put(authController.requireSignin, userController.addFollowing, userController.addFollower);
+
+router.route('/api/v1/users/unfollow')
+    .put(authController.requireSignin, userController.removeFollowing, userController.removeFollower);
 
 router.route('/api/v1/users/:userId')
     .get(authController.requireSignin,userController.read)
@@ -16,11 +28,5 @@ router.route('/api/v1/users/:userId')
 // configuramos o router Express para lidar com parâmetro
 // em uma rota solicitada
 router.param('userId', userController.userById);
-
-router.route('/api/v1/users/photo/:userId')
-    .get(userController.photo, userController.defaultPhoto);
-
-router.route('/api/v1/users/defaultPhoto')
-    .get(userController.defaultPhoto);
 
 export default router;
