@@ -23,6 +23,11 @@ const useStyles = makeStyles(theme => ({
     title: {
         margin: `${theme.spacing(4)}px 0 ${theme.spacing(2)}px`,
         color: theme.palette.openTitle
+    },
+    bigAvatar: {
+        width: 60,
+        height: 60,
+        margin: 'auto'
     }
 }));
 
@@ -54,12 +59,14 @@ export default function Users() {
             <List dense>
                 {
                     users.map((item, i) => {
+                        const photoUrl = item._id
+                            ? `/api/v1/users/photo/${item._id}?${new Date().getTime()}`
+                            : `/api/v1/users/defaultPhoto`;
                         return <Link to={`/user/${item._id}`} key={i}>
                             <ListItem button>
                                 <ListItemAvatar>
-                                    <Avatar>
-                                        <Person />
-                                    </Avatar>
+                                    <Avatar src={photoUrl} 
+                                        className={classes.bigAvatar}/>
                                 </ListItemAvatar>
                                 <ListItemText primary={item.name} />
                                 <ListItemSecondaryAction>
