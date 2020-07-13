@@ -21,6 +21,7 @@ import {
     Link} from "react-router-dom";
 import DeleteUser from './DeleteUser';
 import FollowProfileButton from "./FollowProfileButton";
+import FollowGrid from "./FollowGrid";
 
 const useStyles = makeStyles(theme => ({
     root: theme.mixins.gutters({
@@ -135,6 +136,11 @@ export default function Profile({match}) {
                     <ListItemText primary={"Juntou: " + (
                         new Date(values.user.created)).toDateString()}/>
                 </ListItem>
+                <h6>Seguidores</h6>
+                <FollowGrid people={values.user.followers}/>
+                <br/>
+                <h6>Seguindo</h6>
+                <FollowGrid people={values.user.following}/>
             </List>
         </Paper>
     ) 

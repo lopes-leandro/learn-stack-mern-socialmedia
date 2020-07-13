@@ -1,5 +1,5 @@
 import React from "react";
-import { GridList, GridListTile, Avatar } from "@material-ui/core";
+import { GridList, GridListTile, Avatar, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -36,9 +36,12 @@ export default function FollowGrid(props) {
             <GridList cellHeight={160} className={classes.gridList} cols={4}>
                 {
                     props.people.map((person, index) => {
+                        const photoUrl = person._id
+                            ? `/api/v1/users/photo/${person._id}?${new Date().getTime()}`
+                            : `/api/v1/users/defaultPhoto`;
                         return <GridListTile style={{'height':120}} key={index}>
                             <Link to={"/user/" + person._id}>
-                                <Avatar src={'/api/v1/users/photo' + person._id} 
+                                <Avatar src={photoUrl} 
                                     className={classes.bigAvatar}/>
                                 <Typography className={classes.titleText}>
                                     {person.name}
