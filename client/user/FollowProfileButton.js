@@ -10,13 +10,12 @@ export default function FollowProfileButton(props) {
     const unfollowClick = () => {
         props.onButtonClick(unfollow);
     }
+
     return (<div>
         {
             props.following
-            ? (<Button variant="contained" color="secondary"
-                    onClick={unfollowClick}>Deixar de Seguir</Button>)
-            : (<Button variant="contained" color="primary"
-                    onClick={followClick}>Seguir</Button>)
+            ? (<Button variant="contained" color="secondary" onClick={unfollowClick}>Deixar de Seguir</Button>)
+            : (<Button variant="contained" color="primary" onClick={followClick}>Seguir</Button>)
         }
     </div>)
 }
