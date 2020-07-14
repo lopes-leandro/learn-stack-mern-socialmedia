@@ -3,7 +3,7 @@ import errorHandler from './../helpers/dbErrorHandler';
 import { extend } from 'lodash';
 import formidable from "formidable";
 import fs from "fs";
-import defaultAvatar from "./../../client/assets/images/defaultAvatar.png";
+import defaultAvatar from "./../../client/assets/images/defaultAvatar.jpg";
 
 const create = async (req, res, next) => {
     const user = new User(req.body);
@@ -145,7 +145,7 @@ const addFollower = async (req, res) => {
 const removeFollowing = async (req, res, next) => {
     try {
         await User.findByIdAndUpdate(req.body.userId,
-            {$push: {following: req.body.unfollowId}});
+            {$pull: {following: req.body.unfollowId}});
         next();
     } catch (err) {
         return res.status(400).json({
@@ -157,10 +157,10 @@ const removeFollowing = async (req, res, next) => {
 const removeFollower = async (req, res, next) => {
     try {
         let result = await User.findByIdAndUpdate(req.body.unfollowId,
-            {$push: {followers: req.body.userId}},
+            {$pull: {followers: req.body.userId}},
             {new: true})
             .populate('following', '_id name')
-            .populate('follower', '_id name')
+            .populate('followers', '_id name')
             .exec();
         result.hashed_password = undefined;
         result.salt = undefined;
