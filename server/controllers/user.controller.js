@@ -197,4 +197,5 @@ export default {
     addFollower,
     addFollowing,
     removeFollowing,
-    removeFollower}
+    removeFollower,
+    findPeople}
