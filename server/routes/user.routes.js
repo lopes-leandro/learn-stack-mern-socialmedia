@@ -20,7 +20,8 @@ router.route('/api/v1/users/follow')
 router.route('/api/v1/users/unfollow')
     .put(authController.requireSignin, userController.removeFollowing, userController.removeFollower);
 
-
+router.route('/api/v1/users/findpeople/:userId')
+    .get(authController.requireSignin, userController.findPeople);
 
 router.route('/api/v1/users/:userId')
     .get(authController.requireSignin,userController.read)
